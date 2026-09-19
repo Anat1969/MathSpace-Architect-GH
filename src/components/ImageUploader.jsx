@@ -38,7 +38,7 @@ function downscaleImageToDataUrl(file, maxDim = 640, quality = 0.6) {
   });
 }
 
-export default function ImageUploader({ imageUrl, onSave, onDelete, label = "הוסף תמונה לדוגמה", suggestion }) {
+export default function ImageUploader({ imageUrl, onSave, onDelete, label = "הוסף תמונה לדוגמה", suggestion, square = false }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -101,19 +101,19 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative rounded-2xl overflow-hidden border border-border/50 bg-card"
+        className="relative rounded-xl overflow-hidden border border-border/50 bg-card group"
       >
-        <div className="w-full h-64 bg-muted/40 flex items-center justify-center">
+        <div className={cn("w-full bg-muted/40 flex items-center justify-center", square ? "aspect-square" : "h-64")}>
           <img src={imageUrl} alt="תמונת דוגמה" className="max-w-full max-h-full object-contain" />
         </div>
-        <div className="absolute top-3 left-3 flex gap-2">
-          <Button size="sm" variant="secondary" className="h-8 gap-1.5 text-xs font-heebo shadow"
+        <div className={cn("absolute top-2 left-2 flex gap-1.5", square && "opacity-0 group-hover:opacity-100 transition-opacity")}>
+          <Button size="icon" variant="secondary" className="h-7 w-7 shadow" title="החלף"
             onClick={() => inputRef.current?.click()}>
-            <Pencil className="w-3 h-3" />החלף
+            <Pencil className="w-3 h-3" />
           </Button>
-          <Button size="sm" variant="destructive" className="h-8 gap-1.5 text-xs font-heebo shadow"
+          <Button size="icon" variant="destructive" className="h-7 w-7 shadow" title="מחק"
             onClick={onDelete}>
-            <X className="w-3 h-3" />מחק
+            <X className="w-3 h-3" />
           </Button>
         </div>
         <input ref={inputRef} type="file" accept="image/*" className="hidden"
@@ -124,14 +124,15 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
 
   // ── State: dropzone (idle / uploading / error) ──────────────────────────────
   return (
-    <div className="space-y-3">
+    <div className={square ? "space-y-2" : "space-y-3"}>
       <div
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         onClick={() => !uploading && inputRef.current?.click()}
         className={cn(
-          "relative border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all",
+          "relative border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-all",
+          square ? "aspect-square p-3 gap-1.5" : "p-8 gap-3",
           error ? "border-destructive/50 bg-destructive/5"
                 : dragging ? "border-accent bg-accent/5 scale-[1.01]"
                 : "border-border/40 hover:border-accent/50 hover:bg-muted/30"
@@ -144,29 +145,27 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
           {uploading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-2">
-              <Loader2 className="w-8 h-8 text-accent animate-spin" />
-              <p className="text-sm font-heebo text-muted-foreground">מעבד תמונה...</p>
+              <Loader2 className={cn("text-accent animate-spin", square ? "w-6 h-6" : "w-8 h-8")} />
+              {!square && <p className="text-sm font-heebo text-muted-foreground">מעבד תמונה...</p>}
             </motion.div>
           ) : error ? (
             <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-destructive" />
-              </div>
-              <p className="text-sm font-heebo font-semibold text-destructive max-w-xs">{error}</p>
-              <Button size="sm" variant="outline" className="font-heebo gap-2"
+              className="flex flex-col items-center gap-2 text-center">
+              <AlertCircle className={cn("text-destructive", square ? "w-6 h-6" : "w-8 h-8")} />
+              <p className={cn("font-heebo font-semibold text-destructive", square ? "text-[11px] leading-tight" : "text-sm max-w-xs")}>{error}</p>
+              <Button size="sm" variant="outline" className="font-heebo gap-1.5 h-7 text-xs"
                 onClick={(e) => { e.stopPropagation(); setError(''); inputRef.current?.click(); }}>
-                <Upload className="w-3.5 h-3.5" />נסי שוב
+                <Upload className="w-3 h-3" />נסי שוב
               </Button>
             </motion.div>
           ) : (
             <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-2 text-center">
-              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                <ImageIcon className="w-6 h-6 text-muted-foreground" />
+              className="flex flex-col items-center gap-1.5 text-center">
+              <div className={cn("rounded-xl bg-muted flex items-center justify-center", square ? "w-9 h-9" : "w-12 h-12")}>
+                <ImageIcon className={cn("text-muted-foreground", square ? "w-5 h-5" : "w-6 h-6")} />
               </div>
-              <p className="text-sm font-heebo font-semibold text-foreground">{label}</p>
-              <p className="text-xs text-muted-foreground">גרור תמונה לכאן, הדבק (Ctrl+V), או לחץ לבחירה</p>
+              <p className={cn("font-heebo font-semibold text-foreground", square ? "text-xs leading-tight" : "text-sm")}>{label}</p>
+              {!square && <p className="text-xs text-muted-foreground">גרור תמונה לכאן, הדבק (Ctrl+V), או לחץ לבחירה</p>}
             </motion.div>
           )}
         </AnimatePresence>
@@ -174,31 +173,43 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
 
       {/* Concrete content suggestion so the field is never a blank ask */}
       {suggestion && !uploading && (
-        <div className="rounded-xl border border-accent/20 bg-accent/5 px-4 py-3">
-          <div className="flex items-start gap-2">
-            <Lightbulb className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-heebo font-semibold text-foreground">{suggestion.title}</p>
-              {suggestion.text && (
-                <p className="text-xs text-muted-foreground font-heebo mt-0.5 leading-relaxed">{suggestion.text}</p>
-              )}
-              {suggestion.prompt && (
-                <div className="mt-2 flex items-start gap-2 bg-background/60 rounded-lg px-2.5 py-2 border border-border/40">
-                  <p className="text-[11px] text-muted-foreground font-space flex-1 leading-relaxed" dir="auto">
-                    “{suggestion.prompt}”
-                  </p>
-                  <button
-                    onClick={copySuggestion}
-                    className="shrink-0 text-muted-foreground hover:text-accent transition-colors"
-                    title="העתק פרומפט"
-                  >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
-              )}
+        square ? (
+          <button
+            onClick={copySuggestion}
+            title={suggestion.prompt || suggestion.title}
+            className="w-full flex items-center gap-1.5 rounded-lg border border-accent/20 bg-accent/5 px-2 py-1.5 text-right hover:bg-accent/10 transition-colors"
+          >
+            <Lightbulb className="w-3.5 h-3.5 text-accent shrink-0" />
+            <span className="text-[11px] font-heebo text-foreground flex-1 min-w-0 truncate">{suggestion.title}</span>
+            {suggestion.prompt && (copied ? <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground shrink-0" />)}
+          </button>
+        ) : (
+          <div className="rounded-xl border border-accent/20 bg-accent/5 px-4 py-3">
+            <div className="flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-heebo font-semibold text-foreground">{suggestion.title}</p>
+                {suggestion.text && (
+                  <p className="text-xs text-muted-foreground font-heebo mt-0.5 leading-relaxed">{suggestion.text}</p>
+                )}
+                {suggestion.prompt && (
+                  <div className="mt-2 flex items-start gap-2 bg-background/60 rounded-lg px-2.5 py-2 border border-border/40">
+                    <p className="text-[11px] text-muted-foreground font-space flex-1 leading-relaxed" dir="auto">
+                      “{suggestion.prompt}”
+                    </p>
+                    <button
+                      onClick={copySuggestion}
+                      className="shrink-0 text-muted-foreground hover:text-accent transition-colors"
+                      title="העתק פרומפט"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )
       )}
     </div>
   );

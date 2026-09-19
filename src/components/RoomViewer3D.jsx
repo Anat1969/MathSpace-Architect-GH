@@ -155,7 +155,7 @@ export default function RoomViewer3D({ shape = 'square', ratio = 1, goldenActive
     <div
       ref={mountRef}
       className={cn(
-        "w-full h-64 md:h-80 rounded-2xl overflow-hidden border transition-all duration-700",
+        "w-full h-full min-h-[200px] rounded-2xl overflow-hidden border transition-all duration-700",
         goldenActive ? "border-accent/50 shadow-lg shadow-accent/20" : "border-border/30"
       )}
     />

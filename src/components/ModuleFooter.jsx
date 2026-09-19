@@ -10,8 +10,8 @@ export default function ModuleFooter({ currentModule }) {
   const next = currentModule < TOTAL ? currentModule + 1 : null;
 
   return (
-    <footer className="border-t border-border/50 bg-card/50 mt-8" dir="rtl">
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-4">
+    <footer className="border-t border-border/50 bg-card/50 shrink-0" dir="rtl">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 py-2.5 flex items-center justify-between gap-4">
 
         {/* Prev */}
         {prev ? (

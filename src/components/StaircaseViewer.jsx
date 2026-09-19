@@ -131,7 +131,7 @@ export default function StaircaseViewer({ angle = 30, acceleration = 0, optimal 
     <div
       ref={mountRef}
       className={cn(
-        "w-full h-64 md:h-80 rounded-2xl overflow-hidden border transition-all duration-500",
+        "w-full h-full min-h-[200px] rounded-2xl overflow-hidden border transition-all duration-500",
         optimal ? "border-emerald-500/30 shadow-lg shadow-emerald-500/10" : "border-border/30"
       )}
     />

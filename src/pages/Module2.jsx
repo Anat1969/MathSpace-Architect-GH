@@ -8,7 +8,6 @@ import { AlertCircle, CheckCircle2, Building2, TreePine } from 'lucide-react';
 import ImageUploader from '../components/ImageUploader';
 import ProjectInfoBadge from '../components/ProjectInfoBadge';
 import usePersistedImages from '../hooks/usePersistedImages';
-import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from "@/lib/utils";
 
 export default function Module2() {
@@ -53,122 +52,88 @@ export default function Module2() {
 
   return (
     <ModuleLayout moduleNumber={2} title="בונה השכונות הפרקטלי" subtitle="Fractal City Builder">
-      <div className="space-y-6">
-        {/* 3D City Viewer */}
-        <CityViewer model={model} />
+      <div className="h-full grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-3 min-h-0">
 
-        {/* Message Banner */}
-        <AnimatePresence mode="wait">
-          {message && (
-            <motion.div
-              key={message.type}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className={cn(
-                "flex items-start gap-3 rounded-2xl p-5 border",
-                message.type === 'error'
-                  ? "bg-red-500/5 border-red-500/20"
-                  : "bg-emerald-500/5 border-emerald-500/20"
-              )}
-            >
-              {message.type === 'error' ? (
-                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              ) : (
-                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-              )}
-              <div>
-                <h4 className={cn(
-                  "font-heebo font-bold text-sm mb-1",
-                  message.type === 'error' ? "text-red-600" : "text-emerald-600"
-                )}>
-                  {message.title}
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">{message.description}</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Project Info */}
-        {model && (
-          <ProjectInfoBadge
-            name={records[model === 'monotone' ? 'model_bijlmermeer' : 'model_copenhagen_big']?.Project_Name}
-            architect={records[model === 'monotone' ? 'model_bijlmermeer' : 'model_copenhagen_big']?.Architect}
-            location={model === 'monotone' ? 'אמסטרדם, הולנד' : 'קופנהגן, דנמרק'}
-            type={records[model === 'monotone' ? 'model_bijlmermeer' : 'model_copenhagen_big']?.Application_Type}
-          />
-        )}
-
-        {/* Image Uploader */}
-        <ImageUploader
-          imageUrl={imageUrl}
-          onSave={saveImage}
-          onDelete={deleteImage}
-          label="הוסף תמונה לדוגמה הנוכחית — גרור, הדבק, או לחץ"
-          suggestion={{
-            title: 'רעיון: מבט אווירי על שכונה',
-            text: 'העלו תצלום אוויר של שכונה אורגנית מול מונוטונית, או צרו תמונה עם הפרומפט:',
-            prompt: 'מבט אווירי על שכונה עירונית עם דפוסים פרקטליים אורגניים, רחובות מתעקלים, גינות קהילתיות ושטחים ירוקים, רינדור מפורט מלמעלה',
-          }}
-        />
-
-        {/* Progress & Controls */}
-        <div className="bg-card border border-border/50 rounded-2xl p-6 space-y-6">
-          {/* Belonging metric */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-heebo font-semibold text-foreground">תחושת שייכות (Sense of Belonging)</span>
-              <motion.span
-                key={belonging}
-                initial={{ scale: 1.3 }}
-                animate={{ scale: 1 }}
+        {/* ── Viewer + model buttons ── */}
+        <div className="min-h-0 flex flex-col gap-2">
+          <div className="flex-1 min-h-0 relative">
+            <CityViewer model={model} />
+            {message && (
+              <div
+                key={message.type}
                 className={cn(
-                  "text-2xl font-space font-bold",
-                  belonging > 50 ? "text-emerald-500" : belonging === 0 ? "text-red-500" : "text-muted-foreground"
+                  "absolute bottom-2 inset-x-2 flex items-start gap-2 rounded-xl p-3 border backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300",
+                  message.type === 'error' ? "bg-red-500/10 border-red-500/25" : "bg-emerald-500/10 border-emerald-500/25"
                 )}
               >
-                {belonging}%
-              </motion.span>
-            </div>
-            <Progress value={belonging} className="h-3 rounded-full" />
+                {message.type === 'error'
+                  ? <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  : <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />}
+                <div className="min-w-0">
+                  <h4 className={cn("font-heebo font-bold text-xs mb-0.5", message.type === 'error' ? "text-red-600" : "text-emerald-600")}>
+                    {message.title}
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{message.description}</p>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button
-              onClick={handleModel1}
-              variant="outline"
-              className={cn(
-                "h-auto py-4 px-5 flex flex-col items-start gap-2 text-right rounded-xl transition-all",
-                model === 'monotone' && "border-red-500/30 bg-red-500/5"
-              )}
-            >
+          {/* Model buttons */}
+          <div className="grid grid-cols-2 gap-3 shrink-0">
+            <Button onClick={handleModel1} variant="outline"
+              className={cn("h-auto py-3 px-4 flex flex-col items-start gap-1 text-right rounded-xl", model === 'monotone' && "border-red-500/30 bg-red-500/5")}>
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-muted-foreground" />
                 <span className="font-heebo font-semibold text-sm">מודל 1968 — צורות מבנים</span>
               </div>
-              <span className="text-xs text-muted-foreground font-normal">
-                החל פרקטל על צורת מבנים בלבד
-              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">החל פרקטל על צורת מבנים בלבד</span>
             </Button>
-
-            <Button
-              onClick={handleModel2}
-              variant="outline"
-              className={cn(
-                "h-auto py-4 px-5 flex flex-col items-start gap-2 text-right rounded-xl transition-all",
-                model === 'organic' && "border-emerald-500/30 bg-emerald-500/5"
-              )}
-            >
+            <Button onClick={handleModel2} variant="outline"
+              className={cn("h-auto py-3 px-4 flex flex-col items-start gap-1 text-right rounded-xl", model === 'organic' && "border-emerald-500/30 bg-emerald-500/5")}>
               <div className="flex items-center gap-2">
                 <TreePine className="w-4 h-4 text-muted-foreground" />
                 <span className="font-heebo font-semibold text-sm">מודל 2019 — דפוסי חיים</span>
               </div>
-              <span className="text-xs text-muted-foreground font-normal">
-                החל פרקטל על דפוסי חיים מורכבים
-              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">החל פרקטל על דפוסי חיים מורכבים</span>
             </Button>
+          </div>
+        </div>
+
+        {/* ── Rail ── */}
+        <div className="min-h-0 flex flex-col gap-3">
+          <div className="bg-card border border-border/50 rounded-xl p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-heebo font-semibold text-foreground">תחושת שייכות</span>
+              <span className={cn("text-xl font-space font-bold", belonging > 50 ? "text-emerald-500" : belonging === 0 ? "text-red-500" : "text-muted-foreground")}>
+                {belonging}%
+              </span>
+            </div>
+            <Progress value={belonging} className="h-2.5 rounded-full" />
+          </div>
+
+          {model && (
+            <ProjectInfoBadge
+              name={records[model === 'monotone' ? 'model_bijlmermeer' : 'model_copenhagen_big']?.Project_Name}
+              architect={records[model === 'monotone' ? 'model_bijlmermeer' : 'model_copenhagen_big']?.Architect}
+              location={model === 'monotone' ? 'אמסטרדם, הולנד' : 'קופנהגן, דנמרק'}
+              type={records[model === 'monotone' ? 'model_bijlmermeer' : 'model_copenhagen_big']?.Application_Type}
+            />
+          )}
+
+          <div className="mt-auto">
+            <h3 className="text-xs font-heebo font-semibold text-muted-foreground mb-2">תמונת דוגמה</h3>
+            <ImageUploader
+              square
+              imageUrl={imageUrl}
+              onSave={saveImage}
+              onDelete={deleteImage}
+              label="הוסף תמונה"
+              suggestion={{
+                title: 'רעיון + פרומפט לתמונה',
+                prompt: 'מבט אווירי על שכונה עירונית עם דפוסים פרקטליים אורגניים, רחובות מתעקלים, גינות קהילתיות ושטחים ירוקים, רינדור מפורט מלמעלה',
+              }}
+            />
           </div>
         </div>
       </div>

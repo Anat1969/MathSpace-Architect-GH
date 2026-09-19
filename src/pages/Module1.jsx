@@ -8,7 +8,6 @@ import { Slider } from "@/components/ui/slider";
 import { Lightbulb, Brain, Target, Users, Frown, Leaf } from 'lucide-react';
 import ImageUploader from '../components/ImageUploader';
 import usePersistedImages from '../hooks/usePersistedImages';
-import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 
 const GOLDEN_RATIO = 1.618;
@@ -56,114 +55,88 @@ export default function Module1() {
 
   return (
     <ModuleLayout moduleNumber={1} title="הפיזיקה הרגשית של המרחב" subtitle="Room Geometry Simulator">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 3D Viewer */}
-        <div className="lg:col-span-2">
-          <RoomViewer3D shape={shape} ratio={ratio} goldenActive={isGolden} />
-          <AnimatePresence>
+      <div className="h-full grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-3 min-h-0">
+
+        {/* ── Viewer + controls ── */}
+        <div className="min-h-0 flex flex-col gap-2">
+          <div className="flex-1 min-h-0 relative">
+            <RoomViewer3D shape={shape} ratio={ratio} goldenActive={isGolden} />
             {isGolden && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="mt-3 flex items-center gap-2 bg-accent/10 border border-accent/30 rounded-xl px-4 py-3"
-              >
-                <Lightbulb className="w-5 h-5 text-accent shrink-0" />
-                <p className="text-sm text-accent font-heebo font-medium">
+              <div className="absolute bottom-2 inset-x-2 flex items-center gap-2 bg-accent/15 border border-accent/30 rounded-xl px-3 py-2 backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <Lightbulb className="w-4 h-4 text-accent shrink-0" />
+                <p className="text-xs text-accent font-heebo font-medium">
                   יחס הזהב (1:1.618) מופעל — הפרופורציה המושלמת!
                 </p>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
-        </div>
-
-        {/* Metrics Sidebar */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-heebo font-semibold text-muted-foreground mb-3">מדדים פסיכולוגיים</h3>
-          <MetricCard label="יצירתיות" value={metrics.creativity} icon={Brain} active={shape === 'circle'} />
-          <MetricCard label="פוקוס" value={metrics.focus} icon={Target} active={shape === 'square'} />
-          <MetricCard label="קהילתיות" value={metrics.community} icon={Users} active={shape === 'hexagon'} />
-          <MetricCard label="לחץ" value={metrics.stress} icon={Frown} positive={false} active={isGolden} />
-          <MetricCard label="רוגע" value={metrics.calm} icon={Leaf} active={isGolden} />
-        </div>
-      </div>
-
-      {/* Image Uploader */}
-      <ImageUploader
-        imageUrl={imageUrl}
-        onSave={saveImage}
-        onDelete={deleteImage}
-        label="הוסף תמונה לדוגמה הנוכחית — גרור, הדבק, או לחץ"
-        suggestion={{
-          title: 'רעיון: המחישו את הצורה שבחרתם',
-          text: 'צלמו חדר אמיתי בצורה הנבחרת, או צרו תמונה עם הפרומפט הבא (העתיקו לכלי יצירת תמונות):',
-          prompt: 'חדר מגורים מינימליסטי בצורה גיאומטרית מובהקת (עגול/מרובע/משושה), תאורה טבעית רכה, פרספקטיבה רחבה, רינדור אדריכלי פוטוריאליסטי',
-        }}
-      />
-
-      {/* Control Panel */}
-      <div className="mt-6 bg-card border border-border/50 rounded-2xl p-6">
-        <h3 className="text-sm font-heebo font-semibold text-foreground mb-5">פאנל שליטה</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Shape selector */}
-          <div>
-            <Label className="text-xs text-muted-foreground mb-3 block">צורת החדר</Label>
-            <RadioGroup value={shape} onValueChange={setShape} className="flex flex-wrap gap-3">
-              {[
-                { value: 'circle', label: 'חדר עגול', icon: '○' },
-                { value: 'square', label: 'חדר מרובע', icon: '□' },
-                { value: 'hexagon', label: 'חדר משושה', icon: '⬡' },
-              ].map(item => (
-                <Label
-                  key={item.value}
-                  htmlFor={item.value}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all
-                    ${shape === item.value 
-                      ? 'border-accent bg-accent/5 text-foreground' 
-                      : 'border-border/50 hover:border-border text-muted-foreground'
-                    }`}
-                >
-                  <RadioGroupItem value={item.value} id={item.value} />
-                  <span className="text-lg">{item.icon}</span>
-                  <span className="text-sm font-heebo">{item.label}</span>
-                </Label>
-              ))}
-            </RadioGroup>
           </div>
 
-          {/* Ratio slider */}
-          <div>
-            <Label className="text-xs text-muted-foreground mb-3 block">
-              פרופורציות החדר
-            </Label>
-            <div className="space-y-4">
-              <Slider
-                value={ratioValue}
-                onValueChange={setRatioValue}
-                min={1}
-                max={2}
-                step={0.01}
-                className="w-full"
-              />
-              <div className="flex items-center justify-between text-xs font-space text-muted-foreground">
+          {/* Control panel (compact) */}
+          <div className="bg-card border border-border/50 rounded-xl p-3 shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-[11px] text-muted-foreground mb-2 block">צורת החדר</Label>
+              <RadioGroup value={shape} onValueChange={setShape} className="flex gap-2">
+                {[
+                  { value: 'circle', label: 'עגול', icon: '○' },
+                  { value: 'square', label: 'מרובע', icon: '□' },
+                  { value: 'hexagon', label: 'משושה', icon: '⬡' },
+                ].map(item => (
+                  <Label
+                    key={item.value}
+                    htmlFor={item.value}
+                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border cursor-pointer transition-all
+                      ${shape === item.value
+                        ? 'border-accent bg-accent/5 text-foreground'
+                        : 'border-border/50 hover:border-border text-muted-foreground'}`}
+                  >
+                    <RadioGroupItem value={item.value} id={item.value} className="sr-only" />
+                    <span className="text-base">{item.icon}</span>
+                    <span className="text-xs font-heebo">{item.label}</span>
+                  </Label>
+                ))}
+              </RadioGroup>
+            </div>
+
+            <div>
+              <Label className="text-[11px] text-muted-foreground mb-2 block">פרופורציות החדר</Label>
+              <Slider value={ratioValue} onValueChange={setRatioValue} min={1} max={2} step={0.01} className="w-full" />
+              <div className="flex items-center justify-between text-[11px] font-space text-muted-foreground mt-2">
                 <span>1:1</span>
                 <span className={`px-2 py-0.5 rounded-full transition-colors ${isGolden ? 'bg-accent text-accent-foreground font-bold' : ''}`}>
                   1:{ratio.toFixed(3)}
                 </span>
                 <span>1:2</span>
               </div>
-              <div className="relative h-1">
-                <div className="absolute h-full bg-muted rounded-full w-full" />
-                <div
-                  className="absolute h-3 w-0.5 bg-accent/50 top-1/2 -translate-y-1/2 rounded-full"
-                  style={{ left: `${((GOLDEN_RATIO - 1) / 1) * 100}%` }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground text-center">
-                סמן הזהב: 1:1.618 (φ)
-              </p>
             </div>
+          </div>
+        </div>
+
+        {/* ── Right rail: metrics + square image ── */}
+        <div className="min-h-0 flex flex-col gap-3">
+          <div>
+            <h3 className="text-xs font-heebo font-semibold text-muted-foreground mb-2">מדדים פסיכולוגיים</h3>
+            <div className="grid grid-cols-2 gap-2">
+              <MetricCard compact label="יצירתיות" value={metrics.creativity} icon={Brain} active={shape === 'circle'} />
+              <MetricCard compact label="פוקוס" value={metrics.focus} icon={Target} active={shape === 'square'} />
+              <MetricCard compact label="קהילתיות" value={metrics.community} icon={Users} active={shape === 'hexagon'} />
+              <MetricCard compact label="לחץ" value={metrics.stress} icon={Frown} positive={false} active={isGolden} />
+              <MetricCard compact label="רוגע" value={metrics.calm} icon={Leaf} active={isGolden} />
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-heebo font-semibold text-muted-foreground mb-2">תמונת דוגמה</h3>
+            <ImageUploader
+              square
+              imageUrl={imageUrl}
+              onSave={saveImage}
+              onDelete={deleteImage}
+              label="הוסף תמונה"
+              suggestion={{
+                title: 'רעיון + פרומפט לתמונה',
+                prompt: 'חדר מגורים מינימליסטי בצורה גיאומטרית מובהקת (עגול/מרובע/משושה), תאורה טבעית רכה, פרספקטיבה רחבה, רינדור אדריכלי פוטוריאליסטי',
+              }}
+            />
           </div>
         </div>
       </div>

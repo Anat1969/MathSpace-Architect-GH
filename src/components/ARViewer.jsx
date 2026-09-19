@@ -69,7 +69,7 @@ export default function ARViewer({ mobiusEnabled, fibonacciEnabled }) {
   }, [cameraActive, mobiusEnabled, fibonacciEnabled]);
 
   return (
-    <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden border border-border/30 bg-black">
+    <div className="relative w-full h-full min-h-[200px] rounded-2xl overflow-hidden border border-border/30 bg-black">
       <video
         ref={videoRef}
         autoPlay
