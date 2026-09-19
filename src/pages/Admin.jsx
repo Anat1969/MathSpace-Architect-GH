@@ -5,8 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Plus, Trash2, Edit2, Save, X, Github, Copy, Check } from 'lucide-react';
+import { ArrowRight, Plus, Trash2, Edit2, Save, X, Github, Copy, Check, ImageOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { clearAppImages } from '@/lib/imageStore';
 
 const REPO_URL = 'https://github.com/Anat1969/MathSpace-Architect-GH';
 const CLONE_CMD = 'git clone https://github.com/Anat1969/MathSpace-Architect-GH.git';
@@ -199,6 +200,14 @@ const CONFIGS = {
 export default function Admin() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [cleared, setCleared] = useState(false);
+
+  const handleClearImages = async () => {
+    if (!window.confirm('לנקות את כל תמונות הדוגמה של אפליקציה זו מהדפדפן? פעולה זו נוגעת רק ב-MathSpace Architect ולא באפליקציות אחרות.')) return;
+    await clearAppImages();
+    setCleared(true);
+    setTimeout(() => setCleared(false), 2500);
+  };
 
   const copyClone = () => {
     try {
@@ -234,6 +243,23 @@ export default function Admin() {
         <div className="mb-4 rounded-xl border border-amber-300/40 bg-amber-50/60 px-4 py-3 text-sm font-heebo text-amber-900">
           עריכה מקומית בלבד: שינויים כאן נשמרים בדפדפן הזה בלבד ואינם משפיעים על משתמשים אחרים.
           מקור האמת של התוכן הוא קובצי ה-JSON ב-<span className="font-space">src/data</span> שבמאגר GitHub.
+        </div>
+
+        {/* Clear this app's stored images */}
+        <div className="mb-4 rounded-xl border border-border bg-card px-4 py-4 flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-start gap-2">
+            <ImageOff className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-sm font-heebo font-semibold text-foreground">ניקוי תמונות דוגמה</h3>
+              <p className="text-xs text-muted-foreground font-heebo mt-0.5 leading-relaxed">
+                מוחק את כל תמונות הדוגמה ששמרת באפליקציה זו (בדפדפן הזה בלבד). נוגע רק ב-MathSpace Architect — לא באפליקציות אחרות.
+              </p>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" className="gap-2 font-heebo shrink-0" onClick={handleClearImages}>
+            {cleared ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Trash2 className="w-3.5 h-3.5" />}
+            {cleared ? 'נוקה' : 'נקה תמונות'}
+          </Button>
         </div>
 
         {/* Continue development from Claude Code */}

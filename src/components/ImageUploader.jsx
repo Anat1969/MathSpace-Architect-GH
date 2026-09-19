@@ -55,9 +55,9 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
     setUploading(true);
     try {
       const dataUrl = await downscaleImageToDataUrl(file);
-      const ok = onSave(dataUrl);
+      const ok = await onSave(dataUrl);
       if (ok === false) {
-        setError('לא ניתן היה לשמור את התמונה בדפדפן (אחסון מלא). נסי תמונה קטנה יותר או מחקי תמונות קודמות.');
+        setError('לא ניתן היה לשמור את התמונה בדפדפן. נסי שוב, או פני את התמונות בעמוד הניהול.');
       }
     } catch {
       setError('העלאת התמונה נכשלה. נסי שוב, או בחרי תמונה אחרת.');
