@@ -3,7 +3,10 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  // On GitHub Pages the app is served from /MathSpace-Architect-GH/.
+  // In local dev it stays at the root.
+  base: command === 'build' ? '/MathSpace-Architect-GH/' : '/',
   logLevel: 'error', // Suppress warnings, only show errors
   plugins: [
     base44({
@@ -17,4 +20,4 @@ export default defineConfig({
     }),
     react(),
   ]
-});
+}));
