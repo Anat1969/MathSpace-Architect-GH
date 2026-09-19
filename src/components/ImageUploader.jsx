@@ -38,6 +38,17 @@ function downscaleImageToDataUrl(file, maxDim = 640, quality = 0.6) {
   });
 }
 
+// Fallback: read the file exactly as-is into a data URL. Used when canvas
+// compression can't decode the file (some formats), so the upload still saves.
+function fileToRawDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function ImageUploader({ imageUrl, onSave, onDelete, label = "הוסף תמונה לדוגמה", suggestion, square = false }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -47,17 +58,26 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
 
   const handleFile = useCallback(async (file) => {
     if (!file) return;
-    if (!file.type || !file.type.startsWith('image/')) {
-      setError('הקובץ שנבחר אינו תמונה. נסי קובץ בפורמט JPG או PNG.');
+    const looksImage = (file.type && file.type.startsWith('image/'))
+      || /\.(jpe?g|png|gif|webp|bmp|heic|heif|avif|svg)$/i.test(file.name || '');
+    if (!looksImage) {
+      setError('הקובץ שנבחר אינו תמונה. נסי קובץ תמונה (JPG, PNG, WEBP ועוד).');
       return;
     }
     setError('');
     setUploading(true);
     try {
-      const dataUrl = await downscaleImageToDataUrl(file);
+      // Compress when possible; if the browser can't decode the format for the
+      // canvas, fall back to keeping the original so the upload still saves.
+      let dataUrl;
+      try {
+        dataUrl = await downscaleImageToDataUrl(file);
+      } catch {
+        dataUrl = await fileToRawDataUrl(file);
+      }
       const ok = await onSave(dataUrl);
       if (ok === false) {
-        setError('לא ניתן היה לשמור את התמונה בדפדפן. נסי שוב, או פני את התמונות בעמוד הניהול.');
+        setError('לא ניתן היה לשמור את התמונה. נסי שוב, או פני את התמונות בעמוד הניהול.');
       }
     } catch {
       setError('העלאת התמונה נכשלה. נסי שוב, או בחרי תמונה אחרת.');
