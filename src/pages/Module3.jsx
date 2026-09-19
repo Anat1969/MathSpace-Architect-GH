@@ -116,6 +116,11 @@ export default function Module3() {
             onSave={saveImage}
             onDelete={deleteImage}
             label="הוסף תמונה לתוצאה הנוכחית — גרור, הדבק, או לחץ"
+            suggestion={{
+              title: 'רעיון: המחישו את גרם המדרגות',
+              text: 'צלמו מדרגות אמיתיות, או צרו תמונה של המדרגה שחישבתם עם הפרומפט:',
+              prompt: 'גרם מדרגות מודרני בזווית 32 מעלות, עיצוב נקי, חומרי בטון ועץ, מעקה מינימליסטי, תאורה דרמטית',
+            }}
           />
 
           <div className="mt-6 bg-card border border-border/50 rounded-2xl p-6">
@@ -131,9 +136,16 @@ export default function Module3() {
                 <Label className="text-xs text-muted-foreground mb-2 block">תאוצת שינוי הזווית — נגזרת שנייה</Label>
                 <Input type="number" placeholder="הכנס ערך..." value={acceleration} onChange={e => setAcceleration(e.target.value)} className="font-space" />
               </div>
-              <Button onClick={handleCalculate} className="font-heebo font-semibold" disabled={!angle || !acceleration}>
-                חשב מסלול הליכה
-              </Button>
+              <div>
+                <Button onClick={handleCalculate} className="w-full font-heebo font-semibold" disabled={!angle || !acceleration}>
+                  חשב מסלול הליכה
+                </Button>
+                {(!angle || !acceleration) && (
+                  <p className="text-[11px] text-muted-foreground mt-2 text-center font-heebo">
+                    מלאו זווית ותאוצה כדי לחשב · נסו 32° ותאוצה 5 לתוצאה אופטימלית
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </TabsContent>
