@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from "@/lib/utils";
 
-// Downscale an image file to a compact JPEG data URL so it renders instantly and
-// fits inside localStorage. Large phone/camera images as raw base64 easily exceed
-// the ~5MB storage quota, which is what used to crash the page on upload.
-function downscaleImageToDataUrl(file, maxDim = 1280, quality = 0.82) {
+// Downscale an image file to a small JPEG data URL so it renders instantly and
+// barely touches localStorage. Resolution is intentionally sacrificed for size:
+// a max edge of 640px at quality 0.6 turns even a large phone photo into a few
+// tens of KB, which keeps browser storage tiny and avoids the old upload crash.
+function downscaleImageToDataUrl(file, maxDim = 640, quality = 0.6) {
   return new Promise((resolve, reject) => {
     const objectUrl = URL.createObjectURL(file);
     const img = new Image();
@@ -102,7 +103,9 @@ export default function ImageUploader({ imageUrl, onSave, onDelete, label = "ה�
         animate={{ opacity: 1, y: 0 }}
         className="relative rounded-2xl overflow-hidden border border-border/50 bg-card"
       >
-        <img src={imageUrl} alt="תמונת דוגמה" className="w-full max-h-72 object-cover" />
+        <div className="w-full h-64 bg-muted/40 flex items-center justify-center">
+          <img src={imageUrl} alt="תמונת דוגמה" className="max-w-full max-h-full object-contain" />
+        </div>
         <div className="absolute top-3 left-3 flex gap-2">
           <Button size="sm" variant="secondary" className="h-8 gap-1.5 text-xs font-heebo shadow"
             onClick={() => inputRef.current?.click()}>

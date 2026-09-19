@@ -5,8 +5,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Plus, Trash2, Edit2, Save, X } from 'lucide-react';
+import { ArrowRight, Plus, Trash2, Edit2, Save, X, Github, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const REPO_URL = 'https://github.com/Anat1969/MathSpace-Architect-GH';
+const CLONE_CMD = 'git clone https://github.com/Anat1969/MathSpace-Architect-GH.git';
 
 // ─── Generic Entity Table + Form ────────────────────────────────────────────
 
@@ -195,6 +198,15 @@ const CONFIGS = {
 
 export default function Admin() {
   const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
+
+  const copyClone = () => {
+    try {
+      navigator.clipboard?.writeText(CLONE_CMD);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch { /* clipboard blocked */ }
+  };
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
@@ -207,13 +219,46 @@ export default function Admin() {
             <h1 className="font-heebo font-bold text-foreground">פאנל ניהול תוכן</h1>
             <p className="text-xs text-muted-foreground font-space">CMS — Virtual Architecture Lab</p>
           </div>
+          <div className="flex-1" />
+          <Button
+            onClick={() => window.open(REPO_URL, '_blank', 'noopener')}
+            className="gap-2 font-heebo shrink-0"
+          >
+            <Github className="w-4 h-4" />
+            <span className="hidden sm:inline">המשך פיתוח ב-Claude Code</span>
+          </Button>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-8">
-        <div className="mb-6 rounded-xl border border-amber-300/40 bg-amber-50/60 px-4 py-3 text-sm font-heebo text-amber-900">
+        <div className="mb-4 rounded-xl border border-amber-300/40 bg-amber-50/60 px-4 py-3 text-sm font-heebo text-amber-900">
           עריכה מקומית בלבד: שינויים כאן נשמרים בדפדפן הזה בלבד ואינם משפיעים על משתמשים אחרים.
           מקור האמת של התוכן הוא קובצי ה-JSON ב-<span className="font-space">src/data</span> שבמאגר GitHub.
+        </div>
+
+        {/* Continue development from Claude Code */}
+        <div className="mb-8 rounded-xl border border-border bg-card px-4 py-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Github className="w-4 h-4 text-foreground" />
+            <h3 className="text-sm font-heebo font-semibold text-foreground">המשך פיתוח מ-Claude Code</h3>
+          </div>
+          <p className="text-xs text-muted-foreground font-heebo mb-3 leading-relaxed">
+            כל הקוד יושב ב-GitHub. כדי להמשיך לעבוד על האפליקציה מ-Claude Code — שכפלי את המאגר ופתחי את התיקייה ב-Claude Code:
+          </p>
+          <div className="flex items-center gap-2 bg-muted/60 rounded-lg px-3 py-2 border border-border/40">
+            <code className="text-[11px] text-foreground font-space flex-1 overflow-x-auto whitespace-nowrap" dir="ltr">
+              {CLONE_CMD}
+            </code>
+            <button onClick={copyClone} className="shrink-0 text-muted-foreground hover:text-accent transition-colors" title="העתק">
+              {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+            </button>
+          </div>
+          <div className="mt-3">
+            <Button variant="outline" size="sm" className="gap-2 font-heebo"
+              onClick={() => window.open(REPO_URL, '_blank', 'noopener')}>
+              <Github className="w-3.5 h-3.5" />פתח את המאגר ב-GitHub
+            </Button>
+          </div>
         </div>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <Tabs defaultValue="RoomGeometry">
