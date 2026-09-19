@@ -195,36 +195,6 @@ const CONFIGS = {
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    base44.auth.me().then(u => {
-      setUser(u);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-muted border-t-foreground rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user || user.role !== 'admin') {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center" dir="rtl">
-        <div className="text-center space-y-4">
-          <p className="text-xl font-heebo font-bold text-foreground">גישה מוגבלת למנהלים בלבד</p>
-          <Button onClick={() => navigate('/')} className="font-heebo gap-2">
-            <ArrowRight className="w-4 h-4" />חזרה לדף הבית
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
@@ -241,6 +211,10 @@ export default function Admin() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+        <div className="mb-6 rounded-xl border border-amber-300/40 bg-amber-50/60 px-4 py-3 text-sm font-heebo text-amber-900">
+          עריכה מקומית בלבד: שינויים כאן נשמרים בדפדפן הזה בלבד ואינם משפיעים על משתמשים אחרים.
+          מקור האמת של התוכן הוא קובצי ה-JSON ב-<span className="font-space">src/data</span> שבמאגר GitHub.
+        </div>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <Tabs defaultValue="RoomGeometry">
             <TabsList className="mb-8 flex flex-wrap h-auto gap-1">
@@ -256,7 +230,7 @@ export default function Admin() {
                 <div className="mb-6">
                   <h2 className="text-lg font-heebo font-bold text-foreground">{cfg.label}</h2>
                   <p className="text-sm text-muted-foreground mt-1">
-                    נתונים אלה ישפיעו ישירות על ממשק המשתמש בזמן אמת.
+                    שינויים כאן משתקפים בממשק בדפדפן זה בלבד (תצוגה מקדימה מקומית).
                   </p>
                 </div>
                 <EntityManager entityName={key} fields={cfg.fields} />

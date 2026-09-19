@@ -9,14 +9,15 @@ export default defineConfig(({ command }) => ({
   base: command === 'build' ? '/MathSpace-Architect-GH/' : '/',
   logLevel: 'error', // Suppress warnings, only show errors
   plugins: [
+    // Kept only for the "@/" -> "/src/" path alias it provides.
+    // All Base44 editor/analytics integrations are disabled — this is a
+    // standalone static app with no Base44 backend.
     base44({
-      // Support for legacy code that imports the base44 SDK with @/integrations, @/entities, etc.
-      // can be removed if the code has been updated to use the new SDK imports from @base44/sdk
-      legacySDKImports: process.env.BASE44_LEGACY_SDK_IMPORTS === 'true',
-      hmrNotifier: true,
-      navigationNotifier: true,
-      analyticsTracker: true,
-      visualEditAgent: true
+      legacySDKImports: false,
+      hmrNotifier: false,
+      navigationNotifier: false,
+      analyticsTracker: false,
+      visualEditAgent: false
     }),
     react(),
   ]
