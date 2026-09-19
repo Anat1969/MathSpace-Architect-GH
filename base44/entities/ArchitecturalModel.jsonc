@@ -1,0 +1,50 @@
+{
+  "name": "ArchitecturalModel",
+  "type": "object",
+  "properties": {
+    "Model_ID": {
+      "type": "string",
+      "title": "\u05de\u05d6\u05d4\u05d4 \u05de\u05d5\u05d3\u05dc"
+    },
+    "Math_Model_Name": {
+      "type": "string",
+      "title": "\u05e9\u05dd \u05d4\u05de\u05d5\u05d3\u05dc \u05d4\u05de\u05ea\u05de\u05d8\u05d9"
+    },
+    "Building_Name": {
+      "type": "string",
+      "title": "\u05e9\u05dd \u05d4\u05d1\u05e0\u05d9\u05d9\u05df / \u05d4\u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "Architect": {
+      "type": "string",
+      "title": "\u05d0\u05d3\u05e8\u05d9\u05db\u05dc"
+    },
+    "Building_Type": {
+      "type": "string",
+      "title": "\u05d9\u05d9\u05e2\u05d5\u05d3 \u05d4\u05de\u05d1\u05e0\u05d4"
+    },
+    "Location": {
+      "type": "string",
+      "title": "\u05de\u05d9\u05e7\u05d5\u05dd"
+    },
+    "Mechanism_Description": {
+      "type": "string",
+      "title": "\u05ea\u05d9\u05d0\u05d5\u05e8 \u05d4\u05de\u05e0\u05d2\u05e0\u05d5\u05df"
+    },
+    "Metric_Name": {
+      "type": "string",
+      "title": "\u05e9\u05dd \u05d4\u05de\u05d3\u05d3"
+    },
+    "Metric_Value": {
+      "type": "number",
+      "title": "\u05e2\u05e8\u05da \u05d4\u05de\u05d3\u05d3 (%)"
+    },
+    "Blueprint_Image_URL": {
+      "type": "string",
+      "title": "\u05ea\u05de\u05d5\u05e0\u05ea \u05e9\u05e8\u05d8\u05d5\u05d8"
+    }
+  },
+  "required": [
+    "Model_ID",
+    "Math_Model_Name"
+  ]
+}
