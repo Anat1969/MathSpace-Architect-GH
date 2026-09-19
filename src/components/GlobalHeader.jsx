@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ChevronDown, Menu } from 'lucide-react';
+import { ArrowRight, ChevronDown, Menu, Settings } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -52,6 +52,17 @@ export default function GlobalHeader({ showBack = true }) {
 
         {/* Spacer */}
         <div className="flex-1" />
+
+        {/* Admin / content management */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/admin')}
+          className="shrink-0"
+          title="ניהול תוכן (Admin)"
+        >
+          <Settings className="w-5 h-5" />
+        </Button>
 
         {/* Dropdown Menu */}
         <DropdownMenu>
