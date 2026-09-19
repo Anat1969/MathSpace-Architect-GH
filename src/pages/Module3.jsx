@@ -20,16 +20,16 @@ const TOLERANCE = 3;
 export default function Module3() {
   const [angle, setAngle] = useState('');
   const [acceleration, setAcceleration] = useState('');
-  const { imageUrls, saveImage: save, deleteImage: del } = usePersistedImages('module3');
-  const imageKey = `${angle}_${acceleration}`;
-  const imageUrl = calculated ? (imageUrls[imageKey] || '') : '';
-  const saveImage = (url) => save(imageKey, url);
-  const deleteImage = () => del(imageKey);
   const [calculated, setCalculated] = useState(false);
   const [isOptimal, setIsOptimal] = useState(false);
   const [fatigue, setFatigue] = useState(0);
   const [comfort, setComfort] = useState(0);
   const [stairsRecord, setStairsRecord] = useState(null);
+  const { imageUrls, saveImage: save, deleteImage: del } = usePersistedImages('module3');
+  const imageKey = `${angle}_${acceleration}`;
+  const imageUrl = calculated ? (imageUrls[imageKey] || '') : '';
+  const saveImage = (url) => save(imageKey, url);
+  const deleteImage = () => del(imageKey);
 
   useEffect(() => {
     base44.entities.CalculusPhysicsModel.list().then(rows => {

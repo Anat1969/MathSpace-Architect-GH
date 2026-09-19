@@ -25,13 +25,14 @@ export default function Module1() {
   const [ratioValue, setRatioValue] = useState([1]);
   const [geometries, setGeometries] = useState({});
   const { imageUrls, saveImage: save, deleteImage: del } = usePersistedImages('module1');
+
+  const ratio = ratioValue[0];
+  const isGolden = Math.abs(ratio - GOLDEN_RATIO) < TOLERANCE;
+
   const imageKey = isGolden ? 'golden' : shape;
   const imageUrl = imageUrls[imageKey] || '';
   const saveImage = (url) => save(imageKey, url);
   const deleteImage = () => del(imageKey);
-
-  const ratio = ratioValue[0];
-  const isGolden = Math.abs(ratio - GOLDEN_RATIO) < TOLERANCE;
 
   useEffect(() => {
     base44.entities.RoomGeometry.list().then(records => {
