@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, Plus, Trash2, Edit2, Save, X, Github, Copy, Check, ImageOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { clearAppImages } from '@/lib/imageStore';
+import AIMenu from '@/components/AIMenu';
 
 const REPO_URL = 'https://github.com/Anat1969/MathSpace-Architect-GH';
 const CLONE_CMD = 'git clone https://github.com/Anat1969/MathSpace-Architect-GH.git';
@@ -229,13 +230,7 @@ export default function Admin() {
             <p className="text-xs text-muted-foreground font-space">CMS — Virtual Architecture Lab</p>
           </div>
           <div className="flex-1" />
-          <Button
-            onClick={() => window.open(REPO_URL, '_blank', 'noopener')}
-            className="gap-2 font-heebo shrink-0"
-          >
-            <Github className="w-4 h-4" />
-            <span className="hidden sm:inline">המשך פיתוח ב-Claude Code</span>
-          </Button>
+          <AIMenu items={[{ label: 'המשך פיתוח ב-Claude Code', onSelect: () => window.open(REPO_URL, '_blank', 'noopener') }]} />
         </div>
       </header>
 
