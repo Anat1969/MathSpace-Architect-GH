@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ChevronDown, Menu, Settings } from 'lucide-react';
+import { ArrowRight, ChevronDown, Menu } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AIMenu from "@/components/AIMenu";
 
 const MODULES = [
   { id: 1, path: '/module/1', title: 'מעבדה 1: הפיזיקה הרגשית של המרחב' },
@@ -53,17 +54,6 @@ export default function GlobalHeader({ showBack = true }) {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Admin / content management */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate('/admin')}
-          className="shrink-0"
-          title="ניהול תוכן (Admin)"
-        >
-          <Settings className="w-5 h-5" />
-        </Button>
-
         {/* Dropdown Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -88,6 +78,9 @@ export default function GlobalHeader({ showBack = true }) {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* A&I logo button: content management and development actions */}
+        <AIMenu items={[{ label: 'ניהול תוכן', onSelect: () => navigate('/admin') }]} />
       </div>
     </header>
   );
